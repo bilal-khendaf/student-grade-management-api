@@ -1,17 +1,19 @@
-const basicInfo = require('./basicInfo');
-const servers = require('./servers');
-const tags = require('./tags');
-const components = require('./components');
-const users = require('./users');
-const students = require('./students');
-const evaluations = require('./evaluations');
+import basicInfo from './basicInfo.js';
+import servers from './servers.js';
+import tags from './tags.js';
+import components from './components.js';
+import users from './users/index.js';
+import students from './students/index.js';
+import evaluations from './evaluations/index.js';
 
-module.exports = {
+export default {
   ...basicInfo,
   ...servers,
   ...tags,
   ...components,
-  // ...users,
-  // ...students,
-  ...evaluations,
+  paths: {
+    ...users.paths,
+    ...students.paths,
+    ...evaluations.paths,
+  },
 };

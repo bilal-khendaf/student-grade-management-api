@@ -1,13 +1,13 @@
-const login = require('./login')
-const register = require('./register')
+import login from './login.js';
+import register from './register.js';
 
-module.exports = {
-    paths:{
-        '/login':{
-            ...login
-        },
-        '/signup':{
-            ...register
-        }
-    }
-}
+export default {
+  paths: {
+    '/login': {
+      ...login,
+    },
+    '/signup': {
+      ...register,
+    },
+  },
+};

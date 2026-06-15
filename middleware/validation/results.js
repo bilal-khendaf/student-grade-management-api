@@ -1,38 +1,38 @@
-const {check, validationResult} = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-exports.validationAddResult = [
-    check('student_id')
-        .not()
-        .isEmpty()
-        .withMessage('L\'id est obligatoire'),
-    check('eval_id')
-        .not()
-        .isEmpty()
-        .withMessage('L\'id de l\'évaluation est obligatoire'),
-    check('note')
-        .not()
-        .isEmpty()
-        .withMessage('La note est obligatoire')
-        .isNumeric()
-        .isInt({min: 0, max: 100})
-        .withMessage('La note doit être comprise entre 0 et 100'),
-]
+export const validationAddResult = [
+  check('student_id')
+    .not()
+    .isEmpty()
+    .withMessage('Student ID is required'),
+  check('eval_id')
+    .not()
+    .isEmpty()
+    .withMessage('Evaluation ID is required'),
+  check('note')
+    .not()
+    .isEmpty()
+    .withMessage('Grade note is required')
+    .isNumeric()
+    .isInt({ min: 0, max: 100 })
+    .withMessage('Grade note must be between 0 and 100'),
+];
 
-exports.validationEditResult = [
-    check('eval_id')
-        .not()
-        .isEmpty()
-        .withMessage('L\'id est obligatoire'),
-]
-exports.addResultValidation = (req, res, next) =>{
-    const result = validationResult(req).array()
-    if(!result.length){
-        next()
-    }   const error = result.filter(err => err.msg).map(err => err.msg)
-    if(error.length>0){
-        res.json({
-            success: false,
-            message: error
-        })
-    }
-}
+export const validationEditResult = [
+  check('eval_id')
+    .not()
+    .isEmpty()
+    .withMessage('Evaluation ID is required')
+];
+
+export const addResultValidation = (req, res, next) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    return next();
+  }
+  const errors = result.array().map(err => err.msg);
+  return res.status(400).json({
+    success: false,
+    message: errors
+  });
+};

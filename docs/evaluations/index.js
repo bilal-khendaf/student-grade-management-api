@@ -1,13 +1,13 @@
-const addEvaluation = require('./addEvaluation');
-const delEvaluation = require('./delEvaluation');
+import addEvaluation from './addEvaluation.js';
+import delEvaluation from './delEvaluation.js';
 
-module.exports = {
-  paths:{
-      '/addEvaluation': {
-          ...addEvaluation
-      },
-      '/delEvaluation/:id': {
-          ...delEvaluation
-      }
-  }
+export default {
+  paths: {
+    '/addEvaluation': {
+      ...addEvaluation,
+    },
+    '/delEvaluation/:id': {
+      ...delEvaluation,
+    },
+  },
 };

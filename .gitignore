@@ -1,4 +1,19 @@
+# Dependencies
 /node_modules/
+
+# Local Environment Variables
+.env
+.env.test
+
+# SQLite Database
+/database/school.sqlite3
+
+# User Uploads
+/uploads/*
+!/uploads/.gitkeep
+
+# IDE and System Files
 /.idea/
-/package-lock.json
 /tp02.iml
+.DS_Store
+Thumbs.db

@@ -1,13 +1,13 @@
-const addStudent = require('./addStudent');
-const deleteStudent = require('./delStudent');
+import addStudent from './addStudent.js';
+import deleteStudent from './delStudent.js';
 
-module.exports ={
-    paths:{
-        '/addStudent': {
-            ...addStudent
-        },
-        '/deleStudent/:id': {
-            ...deleteStudent
-        }
-    }
-}
+export default {
+  paths: {
+    '/addStudent': {
+      ...addStudent,
+    },
+    '/deleStudent/:id': {
+      ...deleteStudent,
+    },
+  },
+};

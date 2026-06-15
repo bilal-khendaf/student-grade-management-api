@@ -1,27 +1,41 @@
 {
-  "name": "tp02",
-  "version": "1.0.0",
-  "description": "",
+  "name": "student-grade-management-api",
+  "version": "2.0.0",
+  "description": "A modern, production-ready Node.js RESTful API for managing students, evaluations, and grades with secure JWT authentication and OpenAPI Swagger documentation.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node --env-file=.env index.js",
+    "dev": "node --watch --env-file=.env index.js",
+    "lint": "eslint .",
+    "seed": "node database/seed.js",
+    "test": "node --env-file=.env.test --test"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "express",
+    "sqlite",
+    "jwt",
+    "rest-api",
+    "openapi",
+    "swagger"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.0",
     "csv-parser": "^3.0.0",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.3",
-    "express-validator": "^6.14.0",
-    "jsonwebtoken": "^8.5.1",
-    "multer": "^1.4.4",
-    "nodemon": "^1.18.7",
-    "sqlite3": "^5.0.2",
-    "swagger-jsdoc": "^6.2.0",
-    "swagger-ui-express": "^4.3.0"
+    "express": "^5.0.1",
+    "express-validator": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0"
   }
 }

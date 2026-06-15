@@ -1,31 +1,29 @@
-const {check, validationResult} = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-exports.validationAddEvaluation = [
-    //- Le champ (nom évaluation) ne peut pas être vide et ne peut pas contenir moins de 5 caractères.
-    check('name')
-        .not()
-        .isEmpty()
-        .withMessage('Le champ nom évaluation ne peut pas être vide.')
-        .isLength({min: 5})
-        .withMessage('Le champ nom évaluation ne peut pas contenir moins de 5 caractères.')
+export const validationAddEvaluation = [
+  check('name')
+    .not()
+    .isEmpty()
+    .withMessage('Evaluation name is required.')
+    .isLength({ min: 5 })
+    .withMessage('Evaluation name must be at least 5 characters long.')
 ];
 
-exports.validationEditEvaluation = [
-    check('id')
-        .not()
-        .isEmpty()
-        .withMessage('L\'id est obligatoire'),
-]
+export const validationEditEvaluation = [
+  check('id')
+    .not()
+    .isEmpty()
+    .withMessage('ID is required')
+];
 
-exports.addEvalValidation = (req, res, next) =>{
-    const result = validationResult(req).array()
-    if(!result.length){
-        next()
-    }   const error = result.filter(err => err.msg).map(err => err.msg)
-    if(error.length>0){
-        res.json({
-            success: false,
-            message: error
-        })
-    }
-}
+export const addEvalValidation = (req, res, next) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    return next();
+  }
+  const errors = result.array().map(err => err.msg);
+  return res.status(400).json({
+    success: false,
+    message: errors
+  });
+};

@@ -1,103 +1,70 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./database/school.sqlite3');
+import { db } from '../database/db.js';
 
-const multer = require('multer')
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, '/uploads')
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname)
+export const addStudent = async (req, res) => {
+  try {
+    if (!Array.isArray(req.body)) {
+      const { first_name, last_name, email } = req.body;
+      await db.run('INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)', [first_name, last_name, email]);
+      return res.status(201).json({
+        message: 'Student created successfully'
+      });
+    } else {
+      const students = req.body;
+      for (const student of students) {
+        await db.run('INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)', [student.first_name, student.last_name, student.email]);
+      }
+      return res.status(201).json({
+        message: 'Students created successfully'
+      });
     }
-})
-const upload = multer({ dest: 'uploads/' , storage: storage}).single('file')
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message
+    });
+  }
+};
 
-exports.addStudent = async (req,res) => {
-    if(!Array.isArray(req.body)) {
-        const {first_name, last_name, email} = req.body;
-        db.run('INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)', [first_name, last_name, email], (err) => {
-            if (err) {
-                res.status(500).json({
-                    error: err.message
-                });
-            } else {
-                res.status(201).json({
-                    message: 'Étudiant créé'
-                });
-            }
-        });
-    }else{
-        const students = req.body;
-        students.forEach(student => {
-            db.run('INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)', [student.first_name, student.last_name, student.email], (err) => {
-                if (err) {
-                    return res.status(500).json({
-                        error: err.message
-                    });
-                }
-            });
-        });
-        return res.status(201).json({
-            message: 'Étudiant créé'
-        });
+export const editStudent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { first_name, last_name, email } = req.body;
+    await db.run('UPDATE students SET first_name = ?, last_name = ?, email = ? WHERE id = ?', [first_name, last_name, email, id]);
+    return res.status(201).json({
+      message: 'Student updated successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message
+    });
+  }
+};
+
+export const deleteStudent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.run('DELETE FROM results WHERE student_id = ?', [id]);
+    await db.run('DELETE FROM students WHERE id = ?', [id]);
+    return res.status(201).json({
+      message: 'Student deleted successfully'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message
+    });
+  }
+};
+
+export const addStudentImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
     }
-}
-
-exports.editStudent = async (req,res) => {
-    const {id} = req.params;
-    const {first_name, last_name, email} = req.body;
-    db.run('UPDATE students SET first_name = ?, last_name = ?, email = ? WHERE id = ?', [first_name, last_name, email, id], (err) => {
-        if (err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            res.status(201).json({
-                message: 'Étudiant modifié'
-            });
-        }
+    await db.run('UPDATE students SET image = ? WHERE id = ?', [req.file.path, id]);
+    return res.send(req.file);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message
     });
-}
-
-exports.deleteStudent = async (req,res) => {
-    const {id} = req.params;
-    db.run('DELETE FROM results WHERE student_id = ?', [id], (err) => {
-        if (err) {
-            res.status(500).json({
-                error: err.message
-            });
-        } else {
-            db.run('DELETE FROM students WHERE id = ?', [id], (err) => {
-                if (err) {
-                    res.status(500).json({
-                        error: err.message
-                    });
-                } else {
-                    db.run('DELETE FROM students WHERE id = ?', [id], (err) => {
-                        if (err) {
-                            res.status(500).json({
-                                error: err.message
-                            });
-                        } else {
-                            res.status(201).json({
-                                message: 'Étudiant supprimé'
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
-}
-exports.addStudentImage = async (req,res) => {
-    const {id} = req.params
-    db.run('UPDATE students SET (image) = (?) WHERE id = (?)', [`${req.file.path}`, id], () => {
-        upload(req,res, (err) =>{
-            if(err){
-                res.status(400).send("Something went wrong!");
-            } res.send(req.file);
-        })
-    });
-}
+  }
+};
